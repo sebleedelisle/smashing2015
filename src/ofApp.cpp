@@ -26,9 +26,10 @@ void ofApp::setup(){
 	svgs.back().load("NyanCat.svg");
 	
 	svgs.push_back(ofxSVG());
-	svgs.back().load("world map new file.svg");
+	svgs.back().load("uk map.svg");
 	
 	worldMap.load("world map new file.svg");
+	ukMap.load("uk map.svg");
 	
 	previewProjector = false;
 	
@@ -356,7 +357,7 @@ void ofApp :: drawEffects() {
 		// squares
 		resetEffects();
 		
-		float zpos = ofMap(sync.currentBarFloat, 25,28,400,800);//1200);
+		float zpos = ofMap(sync.currentBarFloat, 25,27.75,400,800);//1200);
 		if(sync.currentBar==24) {
 			
 			// expanding squares
@@ -366,6 +367,7 @@ void ofApp :: drawEffects() {
 		}
 
 		
+		// world map coming forward with radar lines
 		
 		if(sync.currentBarFloat>24.5) {
 			
@@ -379,9 +381,13 @@ void ofApp :: drawEffects() {
 			
 			float brightness = 1;
 			// make the map fly forward at the end
-			if(sync.currentBarFloat>
+			if(sync.currentBarFloat>27.75) {
+				zpos = ofMap(sync.currentBarFloat,27.75,28, 800,1000);
+				brightness = ofMap(sync.currentBarFloat,27.75,28, 1,0);
+				
+			}
 			
-			laserManager.addLaserSVG(worldMap, ofPoint(640,480, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(10,-50) );
+			laserManager.addLaserSVG(worldMap, ofPoint(640,480, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(10,-47), brightness );
 		
 		
 			
@@ -404,6 +410,51 @@ void ofApp :: drawEffects() {
 		}
 	}
 	
+	// UK MAP SECTION
+	
+	if((sync.currentBarFloat>=27.75) && (sync.currentBar<32)) {
+		// scaling up from zero to start
+		float scale = 2;//ofMap(sync.currentBarFloat, 24.5,24.75,0,0.5,true);
+		float zpos = ofMap(sync.currentBarFloat, 27.75, 32,100,700);//1200);
+		
+		// xangle increased over time to tilt the world map
+		float xangle = -60; // ofMap(sync.currentBarFloat, 25,28,-40,-60, true);
+		
+		float brightness = 1;
+		// make the map fly forward at the beginning
+		if((sync.currentBarFloat>27.75) && (sync.currentBarFloat<=28)) {
+			zpos = ofMap(sync.currentBarFloat,27.75,28, -12000,100);
+			brightness = ofMap(sync.currentBarFloat,27.75,28, 0,1);
+			
+		}
+		
+		laserManager.addLaserSVG(ukMap, ofPoint(640,480, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(14,45), brightness );
+		
+		
+		
+		float rotation = sync.barPulse/2;
+		if(sync.currentBar%2==1) rotation+=0.5;
+		rotation*=PI*2;
+		
+		ofPoint radarEndPoint = ofPoint(sin(rotation)*180, cos(rotation)*180);
+		ofPoint radarEndPoint2 = ofPoint(sin(rotation)*180, cos(rotation)*180);
+		radarEndPoint2.rotate(3,ofPoint(0,0,1));
+		
+		radarEndPoint.rotate(-xangle, ofPoint(1,0,0));
+		radarEndPoint2.rotate(-xangle, ofPoint(1,0,0));
+		
+		laserManager.addLaserLineEased(ofPoint(640,480,zpos), ofPoint(640, 480,zpos) + radarEndPoint, ofColor(0,200,0));
+		
+		laserManager.addLaserLineEased(ofPoint(640,480,zpos), ofPoint(640, 480,zpos) + radarEndPoint2, ofColor::green);
+		
+		
+	
+
+	
+	}
+
+
+
 	if((sync.currentBar >= 32) && (sync.currentBar < 44)) {
 		resetEffects();
 		

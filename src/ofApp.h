@@ -114,7 +114,8 @@ class ofApp : public ofBaseApp{
 	
 	
 	
-	ofxSVG worldMap; 
+	ofxSVG worldMap;
+	ofxSVG ukMap;
 	
 	ofImage smashingTitle;
 	vector <ofxSVG> svgs;
