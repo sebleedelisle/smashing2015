@@ -358,33 +358,48 @@ void ofApp :: drawEffects() {
 		
 		float zpos = ofMap(sync.currentBarFloat, 25,28,400,800);//1200);
 		if(sync.currentBar==24) {
-		
+			
+			// expanding squares
 			effectDomeLines.setMode(6);
 			//zpos = ofMap(sync.currentBarFloat, 24,25,-800,400);
 			
 		}
-		float xangle = ofMap(sync.currentBarFloat, 25,28,40,60, true);
+
+		
 		
 		if(sync.currentBarFloat>24.5) {
 			
+			
+			
+			// scaling up from zero to start
 			float scale = ofMap(sync.currentBarFloat, 24.5,24.75,0,0.5,true);
 			
-			laserManager.addLaserSVG(worldMap, ofPoint(640,480, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(0,-50) );
+			// xangle increased over time to tilt the world map
+			float xangle = ofMap(sync.currentBarFloat, 25,28,-40,-60, true);
+			
+			float brightness = 1;
+			// make the map fly forward at the end
+			if(sync.currentBarFloat>
+			
+			laserManager.addLaserSVG(worldMap, ofPoint(640,480, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(10,-50) );
 		
 		
 			
-			/*
-			ofPoint radarEndPoint = ofPoint(sin(sync.barPulse*PI*2)*100, cos(sync.barPulse*PI*2)*60);
-			ofPoint radarEndPoint2 = ofPoint(sin(sync.barPulse*PI*2)*100, cos(sync.barPulse*PI*2)*60);
+			float rotation = sync.barPulse/2;
+			if(sync.currentBar%2==1) rotation+=0.5;
+			rotation*=PI*2;
+			
+			ofPoint radarEndPoint = ofPoint(sin(rotation)*120, cos(rotation)*80);
+			ofPoint radarEndPoint2 = ofPoint(sin(rotation)*120, cos(rotation)*80);
 			radarEndPoint2.rotate(3,ofPoint(0,0,1));
 			
-			radarEndPoint.rotate(xangle, ofPoint(1,0,0));
-			radarEndPoint2.rotate(xangle, ofPoint(1,0,0));
+			radarEndPoint.rotate(-xangle, ofPoint(1,0,0));
+			radarEndPoint2.rotate(-xangle, ofPoint(1,0,0));
 			
 			laserManager.addLaserLineEased(ofPoint(640,480,zpos), ofPoint(640, 480,zpos) + radarEndPoint, ofColor(0,200,0));
 			
 			laserManager.addLaserLineEased(ofPoint(640,480,zpos), ofPoint(640, 480,zpos) + radarEndPoint2, ofColor::green);
-			*/
+			
 			
 		}
 	}
