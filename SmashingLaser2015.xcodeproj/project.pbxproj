@@ -1973,6 +1973,7 @@
 					"\"$(SRCROOT)/../addons/ofxLibdc/libs/osx/lib\"",
 				);
 				PRODUCT_NAME = SmashingLaser2015Debug;
+				SDKROOT = macosx10.10;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2114,6 +2115,7 @@
 					"\"$(SRCROOT)/../addons/ofxLibdc/libs/osx/lib\"",
 				);
 				PRODUCT_NAME = SmashingLaser2015;
+				SDKROOT = macosx10.10;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
