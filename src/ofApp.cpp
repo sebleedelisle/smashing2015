@@ -13,7 +13,7 @@ void ofApp::setup(){
 	
 	guideImage.loadImage("img/LaserableArea2.jpg");
 	music.loadSound("RobotsEdit1.aif");
-	video.loadMovie("Main Timeline_2.mov");
+	video.loadMovie("Main Video 05.mov");
 	video.setVolume(0);
 	video.play();
 	video.update();
@@ -288,7 +288,7 @@ void ofApp::draw(){
 	ofTranslate(512,384);
 	
 	
-	//screenAnimation.draw(sync, vol);
+	screenAnimation.draw(sync, vol);
 	
 	ofPopMatrix(); 
 	
@@ -718,46 +718,44 @@ void ofApp::keyPressed(int key){
     
 
 	if(key == '1') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(1);
+    //terrible message for the left side
+        ofSetColor(225, 255,255,255);
+      //  AnimationSequence::writeinPNL("YOU CAN DO BETTER!");
 	}
 	if(key == '2') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(2);
+    // medium ok message for the left side
+        
 	}
 	if(key == '3') {
-		effectLaserBeams.mode = 1;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(0);
+    // totally awesome message for the left side
+        
 	}
 	if(key == '4') {
-		effectLaserBeams.mode = 2;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(0);
+
 	}
 	if(key == '5') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(1);
-		effectDomeLines.setMode(0);
+
 	}
 	if(key == '6') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(2);
-		effectDomeLines.setMode(0);
+
 	}
 	if(key == '7') {
-	
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(3);
-		effectDomeLines.setMode(0);
+
 	}
+    
+    if(key == '8') {
+    // terrible message for the rigth side
+
+    }
+    
+    if(key == '9') {
+    // medium ok message for the right side
+
+    }
 	
 	if(key == '0') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(0);
+    // awesome message for the right side
+        
 	}
 	
 	if(key == 's') {
