@@ -55,9 +55,19 @@ class ofApp : public ofBaseApp{
 	void calculateScreenSizes();
 	
 	void drawSpirograph(ofPoint pos, int numrevolutions, float smallradius, float largeradius, float start, float end, float rotation);
+
+	void showBlippySquares(int rownum =2, bool oddBarNumber = true);
+	void showWaveform(float vpos = 0.1, float threshold = 0.4);
+	void showWooeeyShapes(float voffset = 0, bool oddBarNumber = false );
+	void updateWooeeyShapes();
+	
+	float currentWooeyPosition = -1;
+	deque	<float> wooeyPositions;
 	
 	void setPosition(int posMS);
 	void setVideoPositionMS(int posMS);
+	
+	//ColourSystem cyan;
 	
 	ofRectangle secondScreenRect; 
 	
@@ -113,7 +123,6 @@ class ofApp : public ofBaseApp{
 	Synchroniser sync;
 	
 	
-	
 	ofxSVG worldMap;
 	ofxSVG ukMap;
 	
@@ -124,6 +133,8 @@ class ofApp : public ofBaseApp{
 	
 	float soundPositionMS;
 	float smoothVol;
+	float vol;
+	
 	deque<float> volumes; 
 	
 	AnimationSequence screenAnimation;

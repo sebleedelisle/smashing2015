@@ -53,6 +53,9 @@ class EffectLaserBeams {
 	float currentAngle;
 	bool respondToVolume;
 	
+	float beamLength;
+	
+	
 
 	
 };

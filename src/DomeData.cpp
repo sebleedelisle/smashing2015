@@ -158,6 +158,66 @@ void DomeData :: draw() {
 	
 }
 
+
+void DomeData :: setPolylineToDomeSquare(ofPolyline& poly, int row, int col, float scale){
+	
+	poly.clear();
+	float angle1 = getAngleForCol(col);
+	float angle2 = getAngleForCol(col+1);
+	
+	float unitForRow[] = {-0.2,-0.01,0.2,0.47, 0.7, 1};
+	if(row>4) row = 4;
+	float startHeight = unitForRow[row];
+	float endHeight = unitForRow[row+1];
+	
+	if(scale!=1.0f) {
+		float diff = (angle1-angle2) / 2.0f * (1-scale);
+		angle1-=diff;
+		angle2+=diff;
+		
+		diff = (endHeight-startHeight) /2.0f * (1-scale);
+		startHeight +=diff;
+		endHeight -= diff;
+		
+	}
+	
+	
+	for(float i = startHeight; i<=endHeight; i+=0.05) {
+		ofPoint p = getPointInDome(i, angle1);
+		poly.addVertex(p);
+		
+	}
+	
+	
+
+	for(float a = angle1; a>=angle2; a-=1) {
+		ofPoint p = getPointInDome(endHeight, a);
+		poly.addVertex(p);
+		
+		
+	}
+	
+	for(float i = endHeight; i>=startHeight; i-=0.05) {
+		ofPoint p = getPointInDome(i, angle2);
+		poly.addVertex(p);
+		
+	}
+	for(float a = angle2; a<angle1; a+=1) {
+		ofPoint p = getPointInDome(startHeight, a);
+		poly.addVertex(p);
+		
+		
+	}
+	
+}
+
+float DomeData :: getAngleForCol(int col) {
+	
+	if(col<=6) return 360 + col*-divAngle;
+	else return 180 + (13-col)*divAngle;
+	
+}
+
 vector<ofPoint> DomeData :: getLevelPoints(){
 	
 	vector<ofPoint> levelpoints;

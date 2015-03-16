@@ -78,44 +78,76 @@ void EffectPipeOrganLines::draw(Synchroniser& sync, float volume, LaserManager& 
 		
 
 		
-	} else if((mode ==2) && (currentPeak>=0)) {
+	} else if(mode ==2) {
+		// simple volume like knight rider
 		
+		int midpipe = pipeOrganData->pipes.size()/2;
+		PipeOrganLine& line = lines[midpipe];
 		
-		int numpipes = pipeOrganData->pipes.size()/2;
-
-		int pipeindex = currentPeak * numpipes*1.5;
-		currentPipeIndex += (pipeindex-currentPipeIndex) *0.1;
-
+		float threshold = 0;
 		
-		if((currentPipeIndex <= numpipes) ){//&&(sync.sixteenthTriggered)) {
-			// make a new line!
-			ofColor col;
-			col.setHsb((int)hue%255,255,255);
-			hue+=3;
+		if(volume>0) {
 			
-			//Pipe& pipe = pipeOrganData->pipes[numpipes + currentPipeIndex];
-			//lines.push_back(PipeOrganLine(pipe.top, pipe.bottom, col, 1,0,0,0,0.1 ));
-			PipeOrganLine& line = lines[numpipes+currentPipeIndex];
-			
-			
-			//if(line.elapsedTime > line.duration) makeParticleForPipe(numpipes+currentPipeIndex, col) ;
-			///line.set( col, 1,0,1,1,0.2 );
-			line.set(ofColor::cyan, 1, 0, 0.5, 0.5,0.3);
-			
-			if(currentPipeIndex>0) {
-				PipeOrganLine& line2 = lines[numpipes - currentPipeIndex];
-				//Pipe& pipe2 = pipeOrganData->pipes[numpipes - currentPipeIndex];
-				if(line2.elapsedTime > line2.duration) makeParticleForPipe(numpipes - currentPipeIndex, col) ;
+			for(int i = 0; i<12; i++) {
+				PipeOrganLine& line = lines[midpipe+i];
 				
-				//line2.set(col, 1,0,1,1,0.2 );
-				line2.set(ofColor::cyan, 1, 0, 0.5, 0.5,0.3 );
 				
+				//float scale = (12.0f-(float)i)/12.0;
+				//scale*=scale;
+				float offset = (float)i/12.0f * 0.5;
+				
+				
+				float vol = ofMap((volume - offset)*2, threshold, 1, 0, 1,true);
+				
+				
+				
+				//vol*=scale;
+				
+				float top = 0.5  + (vol/2.0f);
+				float bottom = 0.5  - (vol/2.0f);
+				line.set(ofColor::cyan, top, bottom, 0.5, 0.5,0.1);
+				
+				if(i>0) lines[midpipe-i].set(ofColor::cyan, top, bottom, 0.5, 0.5,0.1);
+				;
 			}
-
-			
-			//if(hue>255) hue -= 255;
-						
 		}
+//
+//		
+//		
+//
+//		int pipeindex = currentPeak * numpipes*1.5;
+//		currentPipeIndex += (pipeindex-currentPipeIndex) *0.1;
+//
+//		
+//		if((currentPipeIndex <= numpipes) ){//&&(sync.sixteenthTriggered)) {
+//			// make a new line!
+//			ofColor col;
+//			col.setHsb((int)hue%255,255,255);
+//			hue+=3;
+//			
+//			//Pipe& pipe = pipeOrganData->pipes[numpipes + currentPipeIndex];
+//			//lines.push_back(PipeOrganLine(pipe.top, pipe.bottom, col, 1,0,0,0,0.1 ));
+//			PipeOrganLine& line = lines[numpipes+currentPipeIndex];
+//			
+//			
+//			//if(line.elapsedTime > line.duration) makeParticleForPipe(numpipes+currentPipeIndex, col) ;
+//			///line.set( col, 1,0,1,1,0.2 );
+//			line.set(ofColor::cyan, 1, 0, 0.5, 0.5,0.3);
+//			
+//			if(currentPipeIndex>0) {
+//				PipeOrganLine& line2 = lines[numpipes - currentPipeIndex];
+//				//Pipe& pipe2 = pipeOrganData->pipes[numpipes - currentPipeIndex];
+//				if(line2.elapsedTime > line2.duration) makeParticleForPipe(numpipes - currentPipeIndex, col) ;
+//				
+//				//line2.set(col, 1,0,1,1,0.2 );
+//				line2.set(ofColor::cyan, 1, 0, 0.5, 0.5,0.3 );
+//				
+//			}
+//
+//			
+//			//if(hue>255) hue -= 255;
+//						
+//		}
 		
 	
 	} else if(mode ==3) {
@@ -208,6 +240,41 @@ void EffectPipeOrganLines::draw(Synchroniser& sync, float volume, LaserManager& 
 
 }
 
+void EffectPipeOrganLines :: pulseSide(bool leftSide, ofColor col) {
+	
+	if(leftSide) {
+		lines[0].set(col, 0.75, 0.25, 0.5, 0.5,0.1);
+		lines[1].set(col, 1, 0, 0.5, 0.5,0.2);
+		lines[2].set(col, 0.75, 0.25, 0.5, 0.5,0.1);
+		
+	} else {
+		lines[lines.size()-1].set(col, 0.75, 0.25, 0.5, 0.5,0.1);
+		lines[lines.size()-2].set(col, 1, 0, 0.5, 0.5,0.2);
+		lines[lines.size()-3].set(col, 0.75, 0.25, 0.5, 0.5,0.1);
+	
+		
+	}
+	
+}
+
+void EffectPipeOrganLines :: lightSide(bool leftSide, ofColor col){
+	
+	if(leftSide) {
+		lines[0].set(col, 1, 0, 0.5, 0.5,0.1);
+		//lines[1].set(col, 1, 0, 0.5, 0.5,0.2);
+		//lines[2].set(col, 0.75, 0.25, 0.5, 0.5,0.1);
+		
+	} else {
+		lines[lines.size()-1].set(col, 1, 0, 0.5, 0.5,0.1);
+		
+//		lines[lines.size()-1].set(col, 0.75, 0.25, 0.5, 0.5,0.1);
+//		lines[lines.size()-2].set(col, 1, 0, 0.5, 0.5,0.2);
+//		lines[lines.size()-3].set(col, 0.75, 0.25, 0.5, 0.5,0.1);
+		
+		
+	}
+	
+}
 
 void EffectPipeOrganLines :: makeParticleForPipe(int pipeindex, ofColor col) {
 	if(pipeOrganData == NULL) return;

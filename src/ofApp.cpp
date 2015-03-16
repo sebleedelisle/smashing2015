@@ -12,8 +12,8 @@ void ofApp::setup(){
 	screenHeight = 960;
 	
 	guideImage.loadImage("img/LaserableArea2.jpg");
-	music.loadSound("RobotsEdit1.aif");
-	video.loadMovie("Main Timeline_2.mov");
+	music.loadSound("../../../Music/RobotsEdit2.aif");
+	video.loadMovie("../../../Music/Main Video 05.mov");
 	video.setVolume(0);
 	video.play();
 	video.update();
@@ -103,7 +103,7 @@ void ofApp::setup(){
 	soundPositionMS = 0;
 	
 	sync.tempo = 128.05;
-	sync.startPosition = 0;//(60000/111) - 5; // start after 1 beat intro
+	sync.startPosition = -80;//(60000/111) - 5; // start after 1 beat intro
 
 	
 	pipeOrganData.load();
@@ -130,6 +130,9 @@ void ofApp::setup(){
 	right.resize(1024);
     
     svgCounter = 0;
+	
+	
+	
 }
 
 
@@ -137,13 +140,12 @@ void ofApp::setup(){
 void ofApp::update(){
 	
 	
-	
 	float deltaTime = ofClamp(ofGetLastFrameTime(), 0, 0.2);
 	ofSoundUpdate();
 	laserManager.update();
 	if(music.getIsPlaying()) {
 		soundPositionMS = music.getPositionMS();
-		setVideoPositionMS(soundPositionMS);
+		if(sync.barTriggered) setVideoPositionMS(soundPositionMS);
 	}
 	if(soundPositionMS > (video.getDuration()*1000)) video.stop();
 	else if(music.getIsPlaying()) video.play();
@@ -169,7 +171,7 @@ void ofApp::draw(){
 	
 	
 	int numBands = 500;
-	float vol = 0;
+	vol = 0;
 	
 	
 	float * val = ofSoundGetSpectrum(numBands);
@@ -224,14 +226,15 @@ void ofApp::draw(){
 		
 		
 		if((domeData.editable) && (laserDomePoints)){
+			
 			vector<ofPoint> points = domeData.getLevelPoints();
 			
 			for(int i = 0; i<points.size(); i++) {
 				laserManager.addLaserDot(points[i], ofColor :: white);
-				//ofSetColor(255,0,0);
-				//ofCircle(points[i], 20);
+		
 				
 			}
+			
 		}
 
 	} else {
@@ -349,7 +352,14 @@ void ofApp::draw(){
 void ofApp :: drawEffects() {
 	
 	resetEffects();
+	//showWooeeyShapes();
+	//showWaveform();
 	
+	//domeData.setPolylineToDomeSquare(poly,  (float) ofGetMouseY()/(float)ofGetHeight() * 5, (float) ofGetMouseX()/(float)ofGetWidth() * 12, sync.eighthPulse);
+	//laserManager.addLaserPolyline(poly);
+	
+	
+	//showBlippySquares();
 	
 	// BIG SQUARES AND THEN WORLD MAP
 
@@ -459,13 +469,16 @@ void ofApp :: drawEffects() {
 		resetEffects();
 		
 		if(sync.currentBar%2==0) effectPipeOrganLines.setMode(2);
+		else if(sync.currentBar>=36) showWooeeyShapes();
 		
 	}
 	
 	if((sync.currentBar >= 44) && (sync.currentBar < 46)) {
 		resetEffects();
 		effectDomeLines.setMode(1);
+		
 	}
+
 	
 	if((sync.currentBar >= 46) && (sync.currentBar < 49)) {
 		resetEffects();
@@ -474,7 +487,22 @@ void ofApp :: drawEffects() {
 			effectPipeOrganLines.setMode(2);
 		
 	}
+	if((sync.currentBar >= 45) && (sync.currentBar < 47)) {
+		effectLaserBeams.mode = 3;
+	}
 	
+	if((sync.currentBar>=49) && (sync.currentBar<61)) {
+		showBlippySquares();
+		if((sync.currentBar>=53) && (sync.currentBar<57) ) showWooeeyShapes(0,true);
+		
+	}
+	
+	if((sync.currentBar >=57) && (sync.currentBar< 61) ) {
+		
+		showWaveform();
+		
+		
+	}
 	/*
 	if((sync.currentBar>=28) && (sync.currentBar<30)) {
 		
@@ -568,16 +596,326 @@ void ofApp :: drawEffects() {
 	
 	 
 	 */
-	 
+	
+	
+	if((sync.currentBar>=61) && (sync.currentBarFloat<89.1)) {
+		
+		float rotationDistance = 66;
+		effectPipeOrganLines.lightSide(true, ofColor(0,200,200));
+		effectPipeOrganLines.lightSide(false, ofColor(0,200,200));
+		
+		
+		// 61 - 62 - get ready
+		// 63 - 64 - clap when circle hits pipe
+		// 65 - 66 try it now
+		
+		vector<float> clapsLeft;
+		clapsLeft.push_back(66);
+		//clapsLeft.push_back(67);
+		clapsLeft.push_back(68);
+		
+//		clapsLeft.push_back(69);
+		clapsLeft.push_back(70);
+		clapsLeft.push_back(71);
+		clapsLeft.push_back(72);
+
+		clapsLeft.push_back(73.25);
+		clapsLeft.push_back(73.75);
+		clapsLeft.push_back(74.25);
+		clapsLeft.push_back(74.75);
+		clapsLeft.push_back(75.25);
+		clapsLeft.push_back(75.75);
+		
+		vector<float>clapsRight = clapsLeft;
+		
+		
+		clapsLeft.push_back(77.25);
+		clapsLeft.push_back(77.75);
+		clapsLeft.push_back(78.25);
+		clapsLeft.push_back(78.75);
+
+		clapsRight.push_back(79.25);
+		clapsRight.push_back(79.75);
+		clapsRight.push_back(80.25);
+		clapsRight.push_back(80.75);
+		
+		clapsLeft.push_back(81.25);
+		clapsRight.push_back(81.75);
+		clapsLeft.push_back(82.25);
+		clapsRight.push_back(82.75);
+		clapsLeft.push_back(83.25);
+		clapsRight.push_back(83.75);
+		clapsLeft.push_back(84.25);
+		clapsRight.push_back(84.75);
+		
+		clapsLeft.push_back(85.0);
+		clapsLeft.push_back(85.25);
+		clapsRight.push_back(85.5);
+		clapsRight.push_back(85.75);
+		
+		clapsLeft.push_back(86.0);
+		clapsLeft.push_back(86.25);
+		
+
+		clapsRight.push_back(86.5);
+		clapsRight.push_back(86.75);
+		
+		clapsLeft.push_back(87.0);
+		clapsLeft.push_back(87.125);
+		clapsRight.push_back(87.25);
+		clapsRight.push_back(87.375);
+		clapsLeft.push_back(87.5);
+		clapsLeft.push_back(87.625);
+		clapsRight.push_back(87.75);
+		clapsRight.push_back(87.875);
+		
+		clapsLeft.push_back(88.0);
+		clapsLeft.push_back(88.125);
+		clapsLeft.push_back(88.25);
+		clapsLeft.push_back(88.375);
+		clapsLeft.push_back(88.5);
+		clapsLeft.push_back(88.625);
+		clapsLeft.push_back(88.75);
+		clapsLeft.push_back(88.875);
+		clapsLeft.push_back(89);
+		
+		clapsRight.push_back(88.0);
+		clapsRight.push_back(88.125);
+		clapsRight.push_back(88.25);
+		clapsRight.push_back(88.375);
+		clapsRight.push_back(88.5);
+		clapsRight.push_back(88.625);
+		clapsRight.push_back(88.75);
+		clapsRight.push_back(88.875);
+		clapsRight.push_back(89);
+		
+		
+		
+		for (int i = 0; i<clapsLeft.size(); i++) {
+			float clap = clapsLeft[i];
+			
+			if((sync.eighthTriggered) && (sync.currentBar + ((float)sync.current8th / 8.0f) == clap)) {
+		
+				effectPipeOrganLines.pulseSide(true, ofColor::cyan);
+			}
+			
+				
+			if((sync.currentBarFloat+1 > clap) && (sync.currentBarFloat<clap)) {
+				
+				float t = ofMap(clap, sync.currentBarFloat+1, sync.currentBarFloat, 0, 1);
+				ofPoint pos = domeData.getPointInDome(0.06, t*-rotationDistance);
+				
+				
+				laserManager.addLaserCircle(pos, ofColor::cyan, 20);
+				
+			}
+			
+		}
+		
+		for (int i = 0; i<clapsRight.size(); i++) {
+			float clap = clapsRight[i];
+			
+			if((sync.eighthTriggered) && (sync.currentBar + ((float)sync.current8th / 8.0f) == clap)) {
+				
+				effectPipeOrganLines.pulseSide(false, ofColor::cyan);
+			}
+			
+			if((sync.currentBarFloat+1 > clap) && (sync.currentBarFloat<clap)) {
+				
+				float t = ofMap(clap, sync.currentBarFloat+1, sync.currentBarFloat, 0, 1);
+				ofPoint pos = domeData.getPointInDome(0.06, 180 + (t*rotationDistance));
+				
+				
+				laserManager.addLaserCircle(pos, ofColor::cyan, 20);
+				
+			}
+			
+		}
+		
+		//check bar has elapsed
+		
+		
+		
+		
+	}
+	
+	if(sync.currentBar>=89) {
+		showWaveform(0.1,0);
+	}
+	
 	particleSystemManager.draw();
 	effectLaserBeams.draw(laserManager,smoothVol);
 	effectDomeLines.draw(sync, smoothVol, laserManager);
 	effectPipeOrganLines.draw(sync, smoothVol, laserManager, currentPeakFrequency);
 
-
+	updateWooeeyShapes();
 }
 
 
+void ofApp::showWaveform(float vpos, float threshold) {
+	poly.clear();
+	
+	float resolution = 0.5;
+	float speed = 20; // lower is faster
+	float numiterations = 90.0f/speed;
+	float size = 0.2; // this is the multiplier for the sin function from -1 to 1
+	
+	for(int i = 0; i<speed && i< volumes.size() ; i++) {
+		
+		// this ensures that the wave shrinks as it goes across
+		
+		float scale = ofMap(i, speed*0, speed, 1, 0, true);
+		
+		float volume = ofMap(volumes[i], threshold, 1, 0, 1, true) * scale;
+		for(float j= 0; j<numiterations; j+=resolution) {
+			
+			
+			//poly.addVertex( ofPoint(centre.x - (i*20 + j), centre.y + 100- (sin(j/20.0f*PI*2)* volume )));
+			
+			
+			poly.addVertex(domeData.getPointInDome((sin(j/numiterations*PI*2)*size*volume) +vpos,  -90-(i*(numiterations) + (j))));
+		}
+	}
+	
+	
+	
+	laserManager.addLaserPolyline(poly);
+	
+	poly.clear();
+	
+	for(int i = 0; i<speed && i< volumes.size() ; i++) {
+		
+		// this ensures that the wave shrinks as it goes across
+		
+		float scale = ofMap(i, speed*0, speed, 1, 0, true);
+		
+		float volume = ofMap(volumes[i], threshold, 1, 0, 1, true)*scale;
+		for(float j= 0; j<numiterations; j+=resolution) {
+			
+			
+			//poly.addVertex( ofPoint(centre.x - (i*20 + j), centre.y + 100- (sin(j/20.0f*PI*2)* volume )));
+			
+			poly.addVertex(domeData.getPointInDome((sin(j/numiterations*PI*2)*size*-volume) +vpos,  -90+(i*(numiterations) + (j))));
+		}
+	}
+	laserManager.addLaserPolyline(poly);
+	
+}
+
+void ofApp::showWooeeyShapes(float voffset, bool oddBarNumber) {
+	
+	int notes[] = {1,0,0,1,3,1,0,0,3,0,4,8,6,6,0,0};
+	//bool oddBarNumber = false;
+	
+	int beatnum = sync.current8th;
+	beatnum += ((sync.currentBar+(oddBarNumber?1:0))%2) *8;
+	// beatnum should now be 1 - 16 across a 2 bar pattern.
+	
+	int note = notes[beatnum];
+	
+	if(note>0) {
+		note-=1;
+		
+		float targetPosition =((float)note/12.0f)+voffset;
+		
+		if(currentWooeyPosition == -1) currentWooeyPosition = targetPosition;
+		currentWooeyPosition += (targetPosition-currentWooeyPosition)*0.3;
+		
+		ofPoint p = domeData.getPointInDome(currentWooeyPosition, -120);
+		
+		laserManager.addLaserCircle(p, ofColor::white, 10 );
+		
+		p = domeData.getPointInDome(currentWooeyPosition, -60);
+		
+		laserManager.addLaserCircle(p, ofColor::white, 10 );
+		//domeData.setPolylineToDomeSquare(poly,  rownum, 6+note, sync.sixteenthTriggered? 1: sync.sixteenthPulse);
+		
+		//domeData.setPolylineToDomeSquare(poly,  rownum, 6-note, sync.sixteenthTriggered? 1: sync.sixteenthPulse);
+		
+		
+	} else {
+		currentWooeyPosition = -1;
+		
+	}
+	
+	
+	
+}
+
+void ofApp::updateWooeeyShapes() {
+	
+	
+	wooeyPositions.push_front(currentWooeyPosition);
+	if(wooeyPositions.size()> 50) wooeyPositions.pop_back();
+
+	
+	poly.clear();
+	
+	for(int i = 0; i<wooeyPositions.size(); i++) {
+		float pos = wooeyPositions[i];
+		
+		if(pos <0) {
+			
+			if(poly.getVertices().size()>0) {
+				laserManager.addLaserPolyline(poly, ofColor::cyan);
+				poly.clear();
+			}
+		} else {
+			poly.addVertex(domeData.getPointInDome(pos, -120 - i));
+		}
+		
+	}
+	if(poly.getVertices().size()>0) {
+		laserManager.addLaserPolyline(poly, ofColor::cyan);
+		poly.clear();
+	}
+	
+	
+	poly.clear();
+	
+	for(int i = 0; i<wooeyPositions.size(); i++) {
+		float pos = wooeyPositions[i];
+		
+		if(pos <0) {
+			
+			if(poly.getVertices().size()>0) {
+				laserManager.addLaserPolyline(poly, ofColor::cyan);
+				poly.clear();
+			}
+		} else {
+			poly.addVertex(domeData.getPointInDome(pos, i-60));
+		}
+		
+	}
+	if(poly.getVertices().size()>0) {
+		laserManager.addLaserPolyline(poly, ofColor::cyan);
+		poly.clear();
+	}
+
+	
+}
+
+void ofApp::showBlippySquares(int rownum,  bool oddBarNumber) {
+	
+	int notes[] = {2, 1, 2, 1, 2,0,4,0,2,1,2,1,2,2,2,0};
+	
+	int beatnum = sync.current8th;
+	beatnum += ((sync.currentBar+(oddBarNumber?1:0))%2) *8;
+	// beatnum should now be 1 - 16 across a 2 bar pattern.
+	
+	int note = notes[beatnum];
+	
+	if(note>0) {
+		
+		//if()
+		domeData.setPolylineToDomeSquare(poly,  rownum, 6+note, sync.sixteenthTriggered? 1: sync.sixteenthPulse);
+		laserManager.addLaserPolyline(poly);
+		domeData.setPolylineToDomeSquare(poly,  rownum, 6-note, sync.sixteenthTriggered? 1: sync.sixteenthPulse);
+		laserManager.addLaserPolyline(poly);
+	}
+	
+	
+}
 
 void ofApp::resetEffects() {
 	
@@ -770,6 +1108,8 @@ void ofApp :: setPosition(int posMS){
 	music.setPositionMS(posMS);
 
 	setVideoPositionMS(posMS);
+	
+	currentWooeyPosition = -1; 
 	
 }
 

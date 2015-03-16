@@ -23,3 +23,15 @@
 p
 85 end. 
 
+
+
+To do : 
+
+spirals coming from top rather than rings 
+Waveform projected on to 3D dome
+Wiggly line for analog synth sound
+Particles that come down the dome
+Robot mouth on dome squares
+Flash random dome squares? 
+
+Starfield √

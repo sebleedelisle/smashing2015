@@ -40,18 +40,19 @@ struct PipeOrganLine {
 		duration = durationsecs;
 		
 		col = colour;
+		
+		update(0); 
 
 		
 	}
 	
 	void update(float deltaTime) {
 		elapsedTime+=deltaTime;
-		
+
 		topUnit = ofMap(elapsedTime, 0, duration, startTop, endTop, true);
 		currentTop = top + ((bottom - top) * topUnit);
 		bottomUnit = ofMap(elapsedTime, 0, duration, startBottom, endBottom, true);
 		currentBottom = top + ((bottom - top)  * bottomUnit);
-		
 		
 	}
 	
@@ -61,7 +62,6 @@ struct PipeOrganLine {
 	
 	float startTop, startBottom, endTop, endBottom, duration, topUnit, bottomUnit;
 	ofPoint top, bottom, currentTop, currentBottom;
-	
 	
 	
 };
@@ -79,8 +79,13 @@ class EffectPipeOrganLines {
 
 	void setMode(int newmode); 
 	
+	void pulseSide(bool leftSide, ofColor col); 
+	void lightSide(bool leftSide, ofColor col = ofColor::white);
+	
+	
 	PipeOrganData* pipeOrganData = NULL;
 	ParticleSystemManager* particleSystemManager  = NULL;
+	
 	
 	
 	deque <PipeOrganLine> lines;

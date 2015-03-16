@@ -37,11 +37,24 @@ void EffectLaserBeams :: update(float deltaTime){
 		multiColoured = false;
 		rotateEmission = false;
 		respondToVolume = false;
+		emitRate = 5;
+		beamLength = 300;
+	
 	} else if (mode ==2) {
 		
 		multiColoured = true;
 		rotateEmission = true;
 		respondToVolume = true;
+		emitRate = 5;
+		beamLength = 300;
+	
+	} else if (mode ==3) {
+		
+		multiColoured = false;
+		rotateEmission = false;
+		respondToVolume = false;
+		emitRate = 10;
+		beamLength = 10;
 	}
 	
 	if((mode>0) && (elapsedTime * emitRate > emitCount)) {
@@ -50,6 +63,7 @@ void EffectLaserBeams :: update(float deltaTime){
 		beams.push_back(LaserBeam());
 		LaserBeam& beam = beams.back();
 		
+		beam.length = beamLength;
 		if(multiColoured) {
 			beam.hue = currentHue;
 			beam.saturation = 255;

@@ -24,12 +24,32 @@ class DomeData {
 	void save();
 	void load();
 	
-	ofPoint getBezierPoint(float t); 
+	ofPoint getBezierPoint(float t);
+	ofPoint getPointInDome(float curvePos, float angle) {
+		
+		ofPoint q = getBezierPoint(curvePos);
+		
+		q.rotate(angle, ofPoint(0,1,0));
+		q *= scaleXY;
+		q.rotate(rotation->z, ofPoint(0,0,1));
+		q.rotate(rotation->y, ofPoint(0,1,0));
+		q.rotate(rotation->x, ofPoint(1,0,0));
+		q *= scale;
+		q += pos;
+		
+		return q;
+		
+		
+	}
 	
 	void mouseDragged(int x, int y);
 	void mousePressed(int x, int y);
 	void mouseReleased(int x, int y);
 	
+	void setPolylineToDomeSquare(ofPolyline& poly, int row, int col, float scale = 1);
+	float  getAngleForCol(int col);
+
+		
 	ofParameterGroup params;
 	ofXml settings;
 	bool editable;
