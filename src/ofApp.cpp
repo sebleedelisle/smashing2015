@@ -13,7 +13,7 @@ void ofApp::setup(){
 	
 	guideImage.loadImage("img/LaserableArea2.jpg");
 	music.loadSound("../../../Music/RobotsEdit2.aif");
-	video.loadMovie("../../../Music/Main Video 05.mov");
+	video.loadMovie("../../../Music/Main Video 07.mov");
 	video.setVolume(0);
 	video.play();
 	video.update();
@@ -131,6 +131,10 @@ void ofApp::setup(){
     
     svgCounter = 0;
 	
+
+	proximaNovaLB.loadFont("Proxima Nova Light", 48, true, true);
+	
+	
 	
 	
 }
@@ -141,6 +145,7 @@ void ofApp::update(){
 	
 	
 	float deltaTime = ofClamp(ofGetLastFrameTime(), 0, 0.2);
+	
 	ofSoundUpdate();
 	laserManager.update();
 	if(music.getIsPlaying()) {
@@ -161,8 +166,26 @@ void ofApp::update(){
 	effectDomeLines.update(deltaTime);
 	effectPipeOrganLines.update(deltaTime);
 	
+	// wordParticles
+	
+	//cout << wordParticles.size() << endl;
+	for(int i = 0; i<wordParticles.size(); i++) {
+		
+		WordParticle& wp = wordParticles[i];
+		wp.update(deltaTime);
+		
+	}
+	
+	while((wordParticles.size()>0) && (wordParticles.front().life > wordParticles.front().lifeExpectancy)) {
+		wordParticles.erase(wordParticles.begin(), wordParticles.begin()+1);
+		
+	}
+
+	
 	if(clappyBirdActive) clappyBird.update(smoothedInputVolume, deltaTime);
 	else clappyBird.reset();
+
+
 }
 
 //--------------------------------------------------------------
@@ -287,11 +310,36 @@ void ofApp::draw(){
 	
 	video.draw(0,0,1024,768);
 	
+	
+	
+
+	
+	
 	ofPushMatrix();
 	ofTranslate(512,384);
 	
+	// draw wordparticles
+	for(int i = 0; i<wordParticles.size(); i++) {
+		
+		WordParticle& wp = wordParticles[i];
+		ofPushMatrix();
+		ofTranslate(wp.pos);
+		ofSetColor(255, 255, 255,ofMap(wp.life, 0, wp.lifeExpectancy, 255, 0));
+		
+		ofFill();
+		
+		//ofCircle(wp.pos, 10); //, <#float y#>, <#float radius#>)
+		writeMessage(wp.text);
+		
+		
+		
+		ofPopMatrix();
+		
+		
+	}
 	
-	//screenAnimation.draw(sync, vol);
+	
+	screenAnimation.draw(sync, vol);
 	
 	ofPopMatrix(); 
 	
@@ -379,15 +427,18 @@ void ofApp :: drawEffects() {
 		
 		// world map coming forward with radar lines
 		
-		if(sync.currentBarFloat>24.5) {
+		if(sync.currentBarFloat>24.25) {
 			
 			
 			
 			// scaling up from zero to start
-			float scale = ofMap(sync.currentBarFloat, 24.5,24.75,0,0.5,true);
+			float scale = ofMap(sync.currentBarFloat, 24.25,24.75,0,0.5,true);
 			
 			// xangle increased over time to tilt the world map
 			float xangle = ofMap(sync.currentBarFloat, 25,28,-40,-60, true);
+			
+			float ypos = ofMap(sync.currentBarFloat, 24.25,24.75,730,480,true);
+			float xpos = 645;
 			
 			float brightness = 1;
 			// make the map fly forward at the end
@@ -397,27 +448,28 @@ void ofApp :: drawEffects() {
 				
 			}
 			
-			laserManager.addLaserSVG(worldMap, ofPoint(640,480, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(10,-47), brightness );
+			laserManager.addLaserSVG(worldMap, ofPoint(xpos,ypos, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(10,-47), brightness );
 		
-		
-			
-			float rotation = sync.barPulse/2;
-			if(sync.currentBar%2==1) rotation+=0.5;
-			rotation*=PI*2;
-			
-			ofPoint radarEndPoint = ofPoint(sin(rotation)*120, cos(rotation)*80);
-			ofPoint radarEndPoint2 = ofPoint(sin(rotation)*120, cos(rotation)*80);
-			radarEndPoint2.rotate(3,ofPoint(0,0,1));
-			
-			radarEndPoint.rotate(-xangle, ofPoint(1,0,0));
-			radarEndPoint2.rotate(-xangle, ofPoint(1,0,0));
-			
-			laserManager.addLaserLineEased(ofPoint(640,480,zpos), ofPoint(640, 480,zpos) + radarEndPoint, ofColor(0,200,0));
-			
-			laserManager.addLaserLineEased(ofPoint(640,480,zpos), ofPoint(640, 480,zpos) + radarEndPoint2, ofColor::green);
-			
-			
+			if(sync.currentBar>=26) {
+				
+				float rotation = sync.barPulse/2;
+				if(sync.currentBar%2==1) rotation+=0.5;
+				rotation*=PI*2;
+				
+				ofPoint radarEndPoint = ofPoint(sin(rotation)*120, cos(rotation)*80);
+				ofPoint radarEndPoint2 = ofPoint(sin(rotation)*120, cos(rotation)*80);
+				radarEndPoint2.rotate(3,ofPoint(0,0,1));
+				
+				radarEndPoint.rotate(-xangle, ofPoint(1,0,0));
+				radarEndPoint2.rotate(-xangle, ofPoint(1,0,0));
+				
+				laserManager.addLaserLineEased(ofPoint(xpos,ypos,zpos), ofPoint(xpos, ypos,zpos) + radarEndPoint, ofColor(0,200,0));
+				
+				laserManager.addLaserLineEased(ofPoint(xpos,ypos,zpos), ofPoint(xpos, ypos,zpos) + radarEndPoint2, ofColor::green);
+				
+			}
 		}
+
 	}
 	
 	// UK MAP SECTION
@@ -426,6 +478,10 @@ void ofApp :: drawEffects() {
 		// scaling up from zero to start
 		float scale = 2;//ofMap(sync.currentBarFloat, 24.5,24.75,0,0.5,true);
 		float zpos = ofMap(sync.currentBarFloat, 27.75, 32,100,700);//1200);
+		
+		float xpos = 645;
+		float ypos = 480;
+		
 		
 		// xangle increased over time to tilt the world map
 		float xangle = -60; // ofMap(sync.currentBarFloat, 25,28,-40,-60, true);
@@ -438,7 +494,7 @@ void ofApp :: drawEffects() {
 			
 		}
 		
-		laserManager.addLaserSVG(ukMap, ofPoint(640,480, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(14,45), brightness );
+		laserManager.addLaserSVG(ukMap, ofPoint(xpos,ypos, zpos),ofPoint(scale,scale),ofPoint(xangle,0,0), ofPoint(14,45), brightness );
 		
 		
 		
@@ -453,9 +509,9 @@ void ofApp :: drawEffects() {
 		radarEndPoint.rotate(-xangle, ofPoint(1,0,0));
 		radarEndPoint2.rotate(-xangle, ofPoint(1,0,0));
 		
-		laserManager.addLaserLineEased(ofPoint(640,480,zpos), ofPoint(640, 480,zpos) + radarEndPoint, ofColor(0,200,0));
+		laserManager.addLaserLineEased(ofPoint(xpos,ypos,zpos), ofPoint(xpos, ypos,zpos) + radarEndPoint, ofColor(0,200,0));
 		
-		laserManager.addLaserLineEased(ofPoint(640,480,zpos), ofPoint(640, 480,zpos) + radarEndPoint2, ofColor::green);
+		laserManager.addLaserLineEased(ofPoint(xpos,ypos,zpos), ofPoint(xpos, ypos,zpos) + radarEndPoint2, ofColor::green);
 		
 		
 	
@@ -465,15 +521,23 @@ void ofApp :: drawEffects() {
 
 
 
-	if((sync.currentBar >= 32) && (sync.currentBar < 44)) {
+	if((sync.currentBarFloat >= 31.875) && (sync.currentBarFloat < 35.5)) {
+		resetEffects();
+		
+		if((int)(sync.currentBarFloat+0.125)%2==0) effectPipeOrganLines.setMode(2);
+		
+		
+	}
+	
+	if((sync.currentBar >= 36) && (sync.currentBar < 44)) {
 		resetEffects();
 		
 		if(sync.currentBar%2==0) effectPipeOrganLines.setMode(2);
-		else if(sync.currentBar>=36) showWooeeyShapes();
+		else  showWooeeyShapes((sync.currentBar>=40)?-0.15:0);
 		
 	}
 	
-	if((sync.currentBar >= 44) && (sync.currentBar < 46)) {
+	if((sync.currentBar >= 44) && (sync.currentBar < 45)) {
 		resetEffects();
 		effectDomeLines.setMode(1);
 		
@@ -749,6 +813,8 @@ void ofApp :: drawEffects() {
 	effectPipeOrganLines.draw(sync, smoothVol, laserManager, currentPeakFrequency);
 
 	updateWooeeyShapes();
+	
+	
 }
 
 
@@ -1056,47 +1122,60 @@ void ofApp::keyPressed(int key){
     
 
 	if(key == '1') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(1);
+		
+		addWordParticle("BAD!", ofPoint(-200,-200));
+	
+	
 	}
 	if(key == '2') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(2);
+		addWordParticle("OK!", ofPoint(-200,-200));
 	}
 	if(key == '3') {
-		effectLaserBeams.mode = 1;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(0);
+		addWordParticle("PERFECT!", ofPoint(-200,-200));
 	}
-	if(key == '4') {
-		effectLaserBeams.mode = 2;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(0);
-	}
-	if(key == '5') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(1);
-		effectDomeLines.setMode(0);
-	}
-	if(key == '6') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(2);
-		effectDomeLines.setMode(0);
-	}
+	
+	
 	if(key == '7') {
-	
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(3);
-		effectDomeLines.setMode(0);
+		
+		addWordParticle("BAD!", ofPoint(200,-200));
+		
+		
+	}
+	if(key == '8') {
+		addWordParticle("OK!", ofPoint(200,-200));
+	}
+	if(key == '9') {
+		addWordParticle("PERFECT!", ofPoint(200,-200));
 	}
 	
-	if(key == '0') {
-		effectLaserBeams.mode = 0;
-		effectPipeOrganLines.setMode(0);
-		effectDomeLines.setMode(0);
-	}
+	
+//	if(key == '4') {
+//		effectLaserBeams.mode = 2;
+//		effectPipeOrganLines.setMode(0);
+//		effectDomeLines.setMode(0);
+//	}
+//	if(key == '5') {
+//		effectLaserBeams.mode = 0;
+//		effectPipeOrganLines.setMode(1);
+//		effectDomeLines.setMode(0);
+//	}
+//	if(key == '6') {
+//		effectLaserBeams.mode = 0;
+//		effectPipeOrganLines.setMode(2);
+//		effectDomeLines.setMode(0);
+//	}
+//	if(key == '7') {
+//	
+//		effectLaserBeams.mode = 0;
+//		effectPipeOrganLines.setMode(3);
+//		effectDomeLines.setMode(0);
+//	}
+//	
+//	if(key == '0') {
+//		effectLaserBeams.mode = 0;
+//		effectPipeOrganLines.setMode(0);
+//		effectDomeLines.setMode(0);
+//	}
 	
 	if(key == 's') {
 		effectParticles.makeStarBurst(0.5);
@@ -1112,6 +1191,18 @@ void ofApp :: setPosition(int posMS){
 	currentWooeyPosition = -1; 
 	
 }
+
+
+void ofApp :: addWordParticle(string message, ofPoint pos) {
+	
+	wordParticles.push_back(WordParticle());
+	wordParticles.back().init(message, pos, ofPoint(0,0,300));
+	
+	
+	
+}
+
+
 
 void ofApp :: setVideoPositionMS(int posMS){
 	float vidPos = (float)posMS / (video.getDuration()*1000);
@@ -1267,9 +1358,11 @@ void ofApp::audioIn(float * input, int bufferSize, int numChannels){
 	// this is how we get the root of rms :)
 	curVol = sqrt( curVol );
 	
-	smoothedInputVolume *= 0.8;
-	smoothedInputVolume += 0.5 * curVol;
-	smoothedInputVolume = curVol;
+	//smoothedInputVolume *= 0.8;
+	//smoothedInputVolume += 0.5 * curVol;
+	//smoothedInputVolume = curVol;
+	
+	smoothedInputVolume += (( curVol-smoothedInputVolume) * 0.1);
 	//bufferCounter++;
 
 		
@@ -1314,6 +1407,12 @@ void ofApp::exit() {
 	pipeOrganData.save();
 	domeData.save();
 	laserManager.warp.saveSettings();
+}
 
+
+
+void ofApp::writeMessage(string message) {
+	float halfWidth = proximaNovaLB.stringWidth(message)/2;
+	proximaNovaLB.drawString(message, -halfWidth, 0);
 }
 

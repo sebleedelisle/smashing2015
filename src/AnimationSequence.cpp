@@ -157,37 +157,69 @@ void AnimationSequence:: draw(Synchroniser& sync, float volume) {
     }
     
     
-//    if (bar >= 67.0 && bar < 68.5) {
-//        //fade in text
-//        float progress = ofMap(barfloat, 67, 67.25,0,255);
-//        ofSetColor(225, 255,255,progress);
-//        writeinPNL("LEFT SIDE");
-//    }
-//    
-//    if (bar >= 68.5 && bar < 68.75) {
-//        //fade out text
-//        float progress = ofMap(barfloat, 68.5, 68.75,255,0);
-//        ofSetColor(225, 255,255,progress);
-//        writeinPNL("LEFT SIDE");
-//    }
-//    
-//    if (bar >= 69.0 && bar < 70.5) {
-//        //fade in text
-//        float progress = ofMap(barfloat, 69, 69.25,0,255);
-//        ofSetColor(225, 255,255,progress);
-//        writeinPNL("RIGHT SIDE");
-//    }
-//    
-//    if (bar >= 70.5 && bar < 70.75) {
-//        //fade out text
-//        float progress = ofMap(barfloat, 70.5, 70.75,255,0);
-//        ofSetColor(225, 255,255,progress);
-//        writeinPNL("RIGHT SIDE");
-//    }
-//    
-   
+    if (bar >= 76 && bar < 77.5) {
+        //fade in text
+        float progress = ofMap(barfloat, 76, 76.25,0,255);
+        ofSetColor(225, 255,255,progress);
+        writeinPNL("LEFT SIDE");
+    }
     
+    if (bar >= 77.5 && bar < 77.75) {
+        //fade out text
+        float progress = ofMap(barfloat, 77.5, 77.75,255,0);
+        ofSetColor(225, 255,255,progress);
+        writeinPNL("LEFT SIDE");
+    }
     
+    if (bar >= 78.0 && bar < 79.5) {
+        //fade in text
+        float progress = ofMap(barfloat, 69, 69.25,0,255);
+        ofSetColor(225, 255,255,progress);
+        writeinPNL("RIGHT SIDE");
+    }
+    
+    if (bar >= 80.5 && bar < 80.75) {
+        //fade out text
+        float progress = ofMap(barfloat, 70.5, 70.75,255,0);
+        ofSetColor(225, 255,255,progress);
+        writeinPNL("RIGHT SIDE");
+    }
+	if (bar >= 81.0 && bar < 81.5) {
+		//fade in text
+		float progress = ofMap(barfloat, 81, 81.25,0,255);
+		ofSetColor(225, 255,255,progress);
+		writeinPNL("ALTERNATING!");
+	}
+	
+	if (bar >= 81.5 && bar < 81.75) {
+		//fade out text
+		float progress = ofMap(barfloat, 81.5, 81.75,255,0);
+		ofSetColor(225, 255,255,progress);
+		writeinPNL("ALTERNATING!");
+	}
+	
+	if (barfloat > 90 && barfloat < 100 ) {
+		
+		        float progress = ofMap(barfloat, 76, 78, 0, 255);
+		        proximaNovaLB.setSpaceSize(.9);
+		        ofSetColor(234,0,255,progress);
+		        ofPushMatrix();
+		        //ofTranslate(0, 100);
+		        string message = "MADE BY:";
+		        float halfWidth = proximaNovaL.stringWidth(message)/2;
+		        proximaNovaL.drawString(message, -1*halfWidth, 0);
+		
+		        ofSetColor(0,255,255,progress);
+		        message = "@SEB_LY & @VLH";
+		        halfWidth = proximaNovaLB.stringWidth(message)/2;
+		        proximaNovaLB.drawString(message, -1*halfWidth, 72);
+		
+		        ofPopMatrix();
+		    
+	}
+	
+	
+	
 //    if (barfloat > 1 && barfloat < 5) {
 //        //circle with guitar on qurts
 //        ofSetColor(ofColor::cyan);
@@ -2387,7 +2419,7 @@ void AnimationSequence:: draw(Synchroniser& sync, float volume) {
 //    ///end of moved cut
 //    
 //    
-//       ofPopStyle();
+       ofPopStyle();
 //
 }
 

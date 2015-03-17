@@ -26,6 +26,11 @@
 #define GLFW_EXPOSE_NATIVE_NSGL
 #include "GLFW/glfw3native.h"
 
+#include "WordParticle.h"
+
+
+
+
 class ofApp : public ofBaseApp{
 
 	public:
@@ -66,6 +71,11 @@ class ofApp : public ofBaseApp{
 	
 	void setPosition(int posMS);
 	void setVideoPositionMS(int posMS);
+	
+	
+	void addWordParticle(string message, ofPoint pos); 
+	void writeMessage(string message);
+
 	
 	//ColourSystem cyan;
 	
@@ -141,6 +151,10 @@ class ofApp : public ofBaseApp{
 	
 	ofPolyline poly;
 	
+	
+	ofTrueTypeFont	proximaNovaLB;
+	deque<WordParticle> wordParticles;
+	
 
-		
+	
 };
